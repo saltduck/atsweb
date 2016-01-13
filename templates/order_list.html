@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block body %}
+<table class=orders border=1>
+    <tr>
+        <th>均价
+        <th>止损价
+        <th>数量
+        <th>方向
+        <th>策略
+        <th>状态
+{% for order in orders %}
+    <tr>
+        <td>{{ order.avg_fill_price }}
+        <td>{{ order.stoploss }}
+        <td>{{ order.opened_volume }}
+        <td>{% if order.is_long %}多{% else %}空{% endif %}
+        <td>{{ order.strategy_code }}
+        <td>{{ order.status }}
+{% endfor %}
+</table>
+{% endblock %}
