@@ -1,18 +1,21 @@
 {% extends "layout.html" %}
 {% block body %}
+{{ curprice }}
 <table class=orders border=1>
     <tr>
+        <th>下单时间
         <th>均价
-        <th>止损价
         <th>数量
+        <th>止损价
         <th>方向
         <th>策略
         <th>状态
 {% for order in orders %}
-    <tr>
-        <td>{{ order.avg_fill_price }}
-        <td>{{ order.stoploss }}
+    <tr class={% if order.is_long %}long {% else %}short {% endif %}>
+        <td>{{ order.order_time }}
+        <td class={% if (order.is_long and (order.avg_fill_price < curprice)) or (not order.is_long and (order.avg_fill_price > curprice)) %}gain{% else %}loss {% endif %}>{{ order.avg_fill_price | round(2) }}
         <td>{{ order.opened_volume }}
+        <td class={% if (order.is_long and (order.stoploss > order.avg_fill_price)) or (not order.is_long and (order.stoploss < order.avg_fill_price)) %}gain{% else %}loss {% endif %}>{{ order.stoploss | round(2) }}
         <td>{% if order.is_long %}多{% else %}空{% endif %}
         <td>{{ order.strategy_code }}
         <td>{{ order.status }}

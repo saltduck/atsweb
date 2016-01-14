@@ -2,6 +2,7 @@ from operator import attrgetter
 
 from flask import Flask, render_template, request, flash, redirect, url_for,session, abort, g
 from sectradelib.models import Account
+from sectradelib.utils import current_price
 
 app = Flask(__name__)
 app.config.from_object('settings')
@@ -16,7 +17,7 @@ def main():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
     orders = sorted(g.account.opened_orders(), key=attrgetter('strategy_code'))
-    return render_template('order_list.html', orders=orders)
+    return render_template('order_list.html', orders=orders, curprice=current_price('btc_usd_tw'))
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
