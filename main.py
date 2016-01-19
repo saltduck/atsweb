@@ -17,8 +17,7 @@ def before_request():
 def main():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-    orders = sorted(g.account.opened_orders(), key=attrgetter('strategy_code'))
-    return render_template('order_list.html', orders=orders, curprice=current_price('btc_usd_tw'))
+    return render_template('order_list.html')
 
 @app.route('/api/opened-orders/')
 def opened_orders():
