@@ -3,7 +3,7 @@ var Price = React.createClass({
         return {data: ""};
     },
 
-    componentDidMount: function() {
+    loadData: function() {
         $.ajax({
             url: this.props.url,
             dataType: 'json',
@@ -16,6 +16,12 @@ var Price = React.createClass({
             }.bind(this)
         });
     },
+
+    componentDidMount: function() {
+        this.loadData();
+        setInterval(this.loadData, this.props.pollInterval);
+    },
+
     render: function() {
         return (
             <span>{this.state.data}</span>
@@ -24,6 +30,6 @@ var Price = React.createClass({
 });
 
 ReactDOM.render(
-    <Price url="/api/current-price/" />,
+    <Price url="/api/current-price/" pollInterval={1000} />,
     document.getElementById('cur_price')
 );
