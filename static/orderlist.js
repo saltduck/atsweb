@@ -1,8 +1,9 @@
-var Price = React.createClass({
+var Status = React.createClass({
     render: function() {
         return (
-            <div>当前价格: 
-                <span class="price">{this.props.curPrice}</span>
+            <div>
+                <span>当前价格: </span><span className="price">{this.props.data.cur_price}</span>&nbsp;
+                <span>资金余额: </span><span className="currency">{this.props.data.cur_balance}</span><span>BTC</span>
             </div>
         );
     }
@@ -91,19 +92,19 @@ var OrderList = React.createClass({
 
 var OrderListBox = React.createClass({
     getInitialState: function() {
-        return {curPrice: "", orders: []};
+        return {cur_status: {},  orders: []};
     },
 
-    loadPriceData: function() {
+    loadStatusData: function() {
         $.ajax({
-            url: this.props.priceUrl,
+            url: this.props.statusUrl,
             dataType: 'json',
             cache: false,
             success: function(data) {
-                this.setState({curPrice: data});
+                this.setState({cur_status: data});
             }.bind(this),
             error: function(xhr, status, err) {
-                console.error(this.props.priceUrl, status, err.toString());
+                console.error(this.props.statusUrl, status, err.toString());
             }.bind(this)
         });
     },
@@ -123,16 +124,16 @@ var OrderListBox = React.createClass({
     },
 
     componentDidMount: function() {
-        this.loadPriceData();
+        this.loadStatusData();
         this.loadOrdersData();
-        setInterval(this.loadPriceData, this.props.pricePollInterval);
+        setInterval(this.loadStatusData, this.props.statusPollInterval);
         setInterval(this.loadOrdersData, this.props.ordersPollInterval);
     },
 
     render: function() {
         return (
             <div>
-                <Price curPrice={this.state.curPrice} />
+                <Status data={this.state.cur_status} />
                 <OrderList data={this.state.orders} curPrice={this.state.curPrice} />
             </div>
         );
@@ -140,6 +141,6 @@ var OrderListBox = React.createClass({
 });
 
 ReactDOM.render(
-    <OrderListBox priceUrl="/api/current-price/" pricePollInterval={1000} ordersUrl="/api/opened-orders/" ordersPollInterval={10000} />,
+    <OrderListBox statusUrl="/api/current-status/" statusPollInterval={1000} ordersUrl="/api/opened-orders/" ordersPollInterval={10000} />,
     document.getElementById('content')
 );
