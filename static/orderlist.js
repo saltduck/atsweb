@@ -134,7 +134,7 @@ var OrderListBox = React.createClass({
         return (
             <div>
                 <Status data={this.state.cur_status} />
-                <OrderList data={this.state.orders} curPrice={this.state.curPrice} />
+                <OrderList data={this.state.orders} curPrice={this.state.cur_status.cur_price} />
             </div>
         );
     },
