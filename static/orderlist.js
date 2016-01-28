@@ -1,9 +1,33 @@
 var Status = React.createClass({
+    getInitialState: function() {
+        return {cur_price: "", cur_balance: ""}
+    },
+
+    loadData: function() {
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+                this.setState(data);
+                this.props.onPriceChanged(data.cur_price);
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.statusUrl, status, err.toString());
+            }.bind(this)
+        });
+    },
+
+    componentDidMount: function() {
+        this.loadData();
+        setInterval(this.loadData, this.props.pollInterval);
+    },
+
     render: function() {
         return (
             <div>
-                <span>当前价格: </span><span className="price">{this.props.data.cur_price}</span>&nbsp;
-                <span>资金余额: </span><span className="currency">{this.props.data.cur_balance}</span><span>BTC</span>
+                <span>当前价格: </span><span className="price">{this.state.cur_price}</span>&nbsp;
+                <span>资金余额: </span><span className="currency">{this.state.cur_balance}</span><span>BTC</span>
             </div>
         );
     }
@@ -19,13 +43,13 @@ var Order = React.createClass({
         }
         var priceClass = "price";
         if (this.props.order.is_long) {
-            if (this.props.curPrice > this.props.order.avg_fill_price) {
+            if (this.props.cur_price > this.props.order.avg_fill_price) {
                 priceClass += " gain";
             } else {
                 priceClass += " loss";
             }
         } else {
-            if (this.props.curPrice < this.props.order.avg_fill_price) {
+            if (this.props.cur_price < this.props.order.avg_fill_price) {
                 priceClass += " gain";
             } else {
                 priceClass += " loss";
@@ -62,11 +86,34 @@ var Order = React.createClass({
 });
 
 var OrderList = React.createClass({
+    getInitialState: function() {
+        return {cur_price: "", orders: []};
+    },
+
+    loadData: function() {
+        $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+                this.setState({orders: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+
+    componentDidMount: function() {
+        this.loadData();
+        setInterval(this.loadData, this.props.pollInterval);
+    },
+
     render: function() {
-        var curPrice = this.props.curPrice;
-        var orderNodes = this.props.data.map(function(order) {
+        var cur_price = this.props.cur_price;
+        var orderNodes = this.state.orders.map(function(order) {
                 return (
-                    <Order key={order.sys_id} order={order} curPrice={curPrice}></Order>
+                    <Order key={order.sys_id} order={order} cur_price={cur_price}></Order>
                 );
             });
         return (
@@ -92,49 +139,18 @@ var OrderList = React.createClass({
 
 var OrderListBox = React.createClass({
     getInitialState: function() {
-        return {cur_status: {},  orders: []};
+        return {cur_price: ""}
     },
 
-    loadStatusData: function() {
-        $.ajax({
-            url: this.props.statusUrl,
-            dataType: 'json',
-            cache: false,
-            success: function(data) {
-                this.setState({cur_status: data});
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.statusUrl, status, err.toString());
-            }.bind(this)
-        });
-    },
-
-    loadOrdersData: function() {
-        $.ajax({
-            url: this.props.ordersUrl,
-            dataType: 'json',
-            cache: false,
-            success: function(data) {
-                this.setState({orders: data});
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.ordersUrl, status, err.toString());
-            }.bind(this)
-        });
-    },
-
-    componentDidMount: function() {
-        this.loadStatusData();
-        this.loadOrdersData();
-        setInterval(this.loadStatusData, this.props.statusPollInterval);
-        setInterval(this.loadOrdersData, this.props.ordersPollInterval);
+    handlePriceChanged: function(cur_price) {
+        this.setState({cur_price: cur_price});
     },
 
     render: function() {
         return (
             <div>
-                <Status data={this.state.cur_status} />
-                <OrderList data={this.state.orders} curPrice={this.state.cur_status.cur_price} />
+                <Status url={this.props.statusUrl} pollInterval={this.props.statusPollInterval} onPriceChanged={this.handlePriceChanged} />
+                <OrderList url={this.props.ordersUrl} pollInterval={this.props.ordersPollInterval} cur_price={this.state.cur_price} />
             </div>
         );
     },
