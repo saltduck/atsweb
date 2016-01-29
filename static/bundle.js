@@ -19071,7 +19071,7 @@ var Status = React.createClass({
     displayName: 'Status',
 
     getInitialState: function () {
-        return { cur_price: "", cur_balance: "" };
+        return { cur_price: "", cur_balance: "", risk_rate: "" };
     },
 
     loadData: function () {
@@ -19123,6 +19123,17 @@ var Status = React.createClass({
                 'span',
                 null,
                 'BTC'
+            ),
+            React.createElement(
+                'span',
+                null,
+                '保证金率: '
+            ),
+            React.createElement(
+                'span',
+                { className: 'risk-rate' },
+                this.state.risk_rate,
+                '%'
             )
         );
     }

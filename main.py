@@ -1,8 +1,9 @@
 from operator import attrgetter
 
 from flask import Flask, render_template, request, flash, redirect, url_for,session, abort, g, json, jsonify
+
 from sectradelib.models import Account
-from sectradelib.utils import current_price
+from sectradelib.utils import current_price, FloatHash
 
 app = Flask(__name__)
 app.config.from_object('settings')
@@ -55,6 +56,7 @@ def opened_orders():
 def cur_status():
     cur_price = current_price('btc_usd_tw')
     cur_balance = round(g.account.balance_in('BTC'), 4)
+    risk_rate = FloatHash('okcoinriskrate')['btc_usd'] * 100.0
     return json.dumps(locals())
 
 

@@ -4,7 +4,7 @@ var classNames = require('classname');
 
 var Status = React.createClass({
     getInitialState: function() {
-        return {cur_price: "", cur_balance: ""}
+        return {cur_price: "", cur_balance: "", risk_rate: ""}
     },
 
     loadData: function() {
@@ -32,6 +32,7 @@ var Status = React.createClass({
             <div>
                 <span>当前价格: </span><span className="price">{this.state.cur_price}</span>&nbsp;
                 <span>资金余额: </span><span className="currency">{this.state.cur_balance}</span><span>BTC</span>
+                <span>保证金率: </span><span className="risk-rate">{this.state.risk_rate}%</span>
             </div>
         );
     }
