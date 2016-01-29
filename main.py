@@ -54,7 +54,7 @@ def opened_orders():
 @app.route('/api/current-status/')
 def cur_status():
     cur_price = current_price('btc_usd_tw')
-    cur_balance = g.account.balance_in('BTC')
+    cur_balance = round(g.account.balance_in('BTC'), 4)
     return json.dumps(locals())
 
 

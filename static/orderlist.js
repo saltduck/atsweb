@@ -1,3 +1,7 @@
+var React = require('react');
+var ReactDOM = require('react-dom');
+var classNames = require('classname');
+
 var Status = React.createClass({
     getInitialState: function() {
         return {cur_price: "", cur_balance: ""}
@@ -35,42 +39,21 @@ var Status = React.createClass({
 
 var Order = React.createClass({
     render: function() {
-        var orderClass = "order";
-        if (this.props.order.is_long) {
-            orderClass += " long";
-        } else {
-            orderClass += " short";
-        }
-        var priceClass = "price";
-        if (this.props.order.is_long) {
-            if (this.props.cur_price > this.props.order.avg_fill_price) {
-                priceClass += " gain";
-            } else {
-                priceClass += " loss";
-            }
-        } else {
-            if (this.props.cur_price < this.props.order.avg_fill_price) {
-                priceClass += " gain";
-            } else {
-                priceClass += " loss";
-            }
-        }
-        var stopClass = "price";
-        if (this.props.order.stoploss) {
-            if (this.props.order.is_long) {
-                if (this.props.order.stoploss > this.props.order.avg_fill_price) {
-                    stopClass += " gain";
-                } else {
-                    stopClass += " loss";
-                }
-            } else {
-                if (this.props.order.stoploss < this.props.order.avg_fill_price) {
-                    stopClass += " gain";
-                } else {
-                    stopClass += " loss";
-                }
-            }
-        }
+        var orderClass = classNames({
+            'order': true,
+            'long':  this.props.order.is_long,
+            'short': !this.props.order.is_long,
+        });
+        var priceClass = classNames({
+            'price': true,
+            'gain': this.props.order.is_long == (this.props.cur_price > this.props.order.avg_fill_price),
+            'loss': this.props.order.is_long != (this.props.cur_price > this.props.order.avg_fill_price),
+        });
+        var stopClass = classNames({
+            'price':  true,
+            'gain': (this.props.order.stoploss > 0) && (this.props.order.is_long == (this.props.order.stoploss > this.props.order.avg_fill_price)),
+            'loss': (this.props.order.stoploss > 0) && (this.props.order.is_long != (this.props.order.stoploss > this.props.order.avg_fill_price)),
+        });
         return (
             <tr className={orderClass}>
                 <td className="order_time">{this.props.order.order_time}</td>
