@@ -1,4 +1,5 @@
 from operator import attrgetter
+from decorator import decorator
 
 from flask import Flask, render_template, request, flash, redirect, url_for,session, abort, g, json, jsonify
 
@@ -9,12 +10,11 @@ app = Flask(__name__)
 app.config.from_object('settings')
 app.config.from_envvar('OKWEB_SETTINGS', silent=True)
 
-def require_login(func):
-    def inner(*args, **kwargs):
-        if not session.get('logged_in'):
-            return redirect(url_for('login'))
-        return func(*args, **kwargs)
-    return inner
+@decorator
+def require_login(func, *args, **kwargs):
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+    return func(*args, **kwargs)
 
 @app.before_request
 def get_account_object():
@@ -30,7 +30,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You are logged in')
-            return redirect(url_for('main'))
+            return redirect('/')
     return render_template('login.html', error=error)
 
 @app.route('/logout/')
@@ -39,20 +39,20 @@ def logout():
     flash('You were logged out')
     return redirect('/')
 
-@require_login
 @app.route('/')
+@require_login
 def main():
     return render_template('order_list.html')
 
-@require_login
 @app.route('/api/opened-orders/')
+@require_login
 def opened_orders():
     orders = sorted(g.account.opened_orders(), key=attrgetter('strategy_code'))
     orders = [dict(sys_id=o.sys_id, order_time=o.order_time.strftime('%m-%d %H:%M:%S'), avg_fill_price=round(o.avg_fill_price, 2), volume=o.opened_volume, stoploss=round(o.stoploss, 2), is_long=o.is_long, scode=o.strategy_code, status=o.status) for o in orders]
     return json.dumps(orders)
 
-@require_login
 @app.route('/api/current-status/')
+@require_login
 def cur_status():
     cur_price = current_price('btc_usd_tw')
     cur_balance = round(g.account.balance_in('BTC'), 4)
