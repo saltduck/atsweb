@@ -19255,70 +19255,105 @@ var OrderList = React.createClass({
     },
 
     render: function () {
+        var volumes = { 'btc_usd_tw': { true: 0, false: 0 }, 'btc_usd_qt': { true: 0, false: 0 } };
         var cur_price = this.props.cur_price;
         var orderNodes = this.state.orders.map(function (order) {
+            volumes[order.secid][order.is_long] += order.volume;
             return React.createElement(Order, { key: order.sys_id, order: order, cur_price: cur_price[order.secid] });
         });
         return React.createElement(
-            'table',
-            { className: 'orderList table table-bordered table-condensed' },
+            'div',
+            null,
             React.createElement(
-                'thead',
+                'p',
                 null,
+                '本周合约：多头 ',
                 React.createElement(
-                    'tr',
+                    'span',
                     null,
-                    React.createElement(
-                        'th',
-                        null,
-                        '下单时间'
-                    ),
-                    React.createElement(
-                        'th',
-                        null,
-                        '订单号'
-                    ),
-                    React.createElement(
-                        'th',
-                        null,
-                        '合约'
-                    ),
-                    React.createElement(
-                        'th',
-                        null,
-                        '均价'
-                    ),
-                    React.createElement(
-                        'th',
-                        null,
-                        '数量'
-                    ),
-                    React.createElement(
-                        'th',
-                        null,
-                        '盈亏'
-                    ),
-                    React.createElement(
-                        'th',
-                        null,
-                        '止损价'
-                    ),
-                    React.createElement(
-                        'th',
-                        null,
-                        '策略'
-                    ),
-                    React.createElement(
-                        'th',
-                        null,
-                        '状态'
-                    )
-                )
+                    volumes['btc_usd_tw'][true]
+                ),
+                ' 张 空头 ',
+                React.createElement(
+                    'span',
+                    null,
+                    -volumes['btc_usd_tw'][false]
+                ),
+                ' 张 | 季度合约：多头 ',
+                React.createElement(
+                    'span',
+                    null,
+                    volumes['btc_usd_qt'][true]
+                ),
+                ' 张 空头 ',
+                React.createElement(
+                    'span',
+                    null,
+                    -volumes['btc_usd_qt'][false]
+                ),
+                ' 张'
             ),
             React.createElement(
-                'tbody',
-                null,
-                orderNodes
+                'table',
+                { className: 'orderList table table-bordered table-condensed' },
+                React.createElement(
+                    'thead',
+                    null,
+                    React.createElement(
+                        'tr',
+                        null,
+                        React.createElement(
+                            'th',
+                            null,
+                            '下单时间'
+                        ),
+                        React.createElement(
+                            'th',
+                            null,
+                            '订单号'
+                        ),
+                        React.createElement(
+                            'th',
+                            null,
+                            '合约'
+                        ),
+                        React.createElement(
+                            'th',
+                            null,
+                            '均价'
+                        ),
+                        React.createElement(
+                            'th',
+                            null,
+                            '数量'
+                        ),
+                        React.createElement(
+                            'th',
+                            null,
+                            '盈亏'
+                        ),
+                        React.createElement(
+                            'th',
+                            null,
+                            '止损价'
+                        ),
+                        React.createElement(
+                            'th',
+                            null,
+                            '策略'
+                        ),
+                        React.createElement(
+                            'th',
+                            null,
+                            '状态'
+                        )
+                    )
+                ),
+                React.createElement(
+                    'tbody',
+                    null,
+                    orderNodes
+                )
             )
         );
     }

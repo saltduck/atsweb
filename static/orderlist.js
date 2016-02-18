@@ -100,13 +100,19 @@ var OrderList = React.createClass({
     },
 
     render: function() {
+        var volumes = {'btc_usd_tw': {true: 0, false:0}, 'btc_usd_qt': {true: 0, false: 0}};
         var cur_price = this.props.cur_price;
         var orderNodes = this.state.orders.map(function(order) {
+                volumes[order.secid][order.is_long] += order.volume;
                 return (
                     <Order key={order.sys_id} order={order} cur_price={cur_price[order.secid]}></Order>
                 );
             });
         return (
+            <div>
+            <p>本周合约：多头 <span>{volumes['btc_usd_tw'][true]}</span> 张 空头 <span>{-volumes['btc_usd_tw'][false]}</span> 张
+             | 季度合约：多头 <span>{volumes['btc_usd_qt'][true]}</span> 张 空头 <span>{-volumes['btc_usd_qt'][false]}</span> 张
+            </p>
             <table className="orderList table table-bordered table-condensed">
             <thead>
                 <tr>
@@ -125,6 +131,7 @@ var OrderList = React.createClass({
                 {orderNodes}
             </tbody>
             </table>
+            </div>
         );
     }
 });
