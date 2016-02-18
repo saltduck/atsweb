@@ -19106,9 +19106,27 @@ var Status = React.createClass({
             React.createElement(
                 'span',
                 { className: 'price' },
-                this.state.cur_price
+                this.state.cur_price['btc_usd']
             ),
-            ' ',
+            ' / ',
+            React.createElement(
+                'span',
+                { className: 'price' },
+                this.state.cur_price['btc_usd_tw']
+            ),
+            ' / ',
+            React.createElement(
+                'span',
+                { className: 'price' },
+                this.state.cur_price['btc_usd_nw']
+            ),
+            ' / ',
+            React.createElement(
+                'span',
+                { className: 'price' },
+                this.state.cur_price['btc_usd_qt']
+            ),
+            '  ',
             React.createElement(
                 'span',
                 null,
@@ -19122,7 +19140,7 @@ var Status = React.createClass({
             React.createElement(
                 'span',
                 null,
-                'BTC'
+                'BTC '
             ),
             React.createElement(
                 'span',
@@ -19150,8 +19168,8 @@ var Order = React.createClass({
         });
         var priceClass = classNames({
             'price': true,
-            'gain': this.props.order.is_long == this.props.cur_price > this.props.order.avg_fill_price,
-            'loss': this.props.order.is_long != this.props.cur_price > this.props.order.avg_fill_price
+            'gain': this.props.order.is_long == this.props.cur_price[this.props.secid] > this.props.order.avg_fill_price,
+            'loss': this.props.order.is_long != this.props.cur_price[this.props.secid] > this.props.order.avg_fill_price
         });
         var stopClass = classNames({
             'price': true,

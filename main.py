@@ -48,13 +48,13 @@ def main():
 @require_login
 def opened_orders():
     orders = sorted(g.account.opened_orders(), key=attrgetter('strategy_code'))
-    orders = [dict(sys_id=o.sys_id, order_time=o.order_time.strftime('%m-%d %H:%M:%S'), avg_fill_price=round(o.avg_fill_price, 2), volume=o.opened_volume, stoploss=round(o.stoploss, 2), is_long=o.is_long, scode=o.strategy_code, status=o.status) for o in orders]
+    orders = [dict(secid=o.instrument.secid, sys_id=o.sys_id, order_time=o.order_time.strftime('%m-%d %H:%M:%S'), avg_fill_price=round(o.avg_fill_price, 2), volume=o.opened_volume, stoploss=round(o.stoploss, 2), is_long=o.is_long, scode=o.strategy_code, status=o.status) for o in orders]
     return json.dumps(orders)
 
 @app.route('/api/current-status/')
 @require_login
 def cur_status():
-    cur_price = current_price('btc_usd_tw')
+    cur_price = {sym: current_price(sym) for sym in ('btc_usd', 'btc_usd_tw', 'btc_usd_nw', 'btc_usd_qt')}
     cur_balance = round(g.account.balance_in('BTC'), 4)
     risk_rate = FloatHash('okcoinriskrate')['btc_usd'] * 100.0
     return json.dumps(locals())

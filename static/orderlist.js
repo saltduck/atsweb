@@ -30,8 +30,12 @@ var Status = React.createClass({
     render: function() {
         return (
             <div>
-                <span>当前价格: </span><span className="price">{this.state.cur_price}</span>&nbsp;
-                <span>资金余额: </span><span className="currency">{this.state.cur_balance}</span><span>BTC</span>
+                <span>当前价格: </span>
+                <span className="price">{this.state.cur_price['btc_usd']}</span>&nbsp;/&nbsp;
+                <span className="price">{this.state.cur_price['btc_usd_tw']}</span>&nbsp;/&nbsp;
+                <span className="price">{this.state.cur_price['btc_usd_nw']}</span>&nbsp;/&nbsp;
+                <span className="price">{this.state.cur_price['btc_usd_qt']}</span>&nbsp;&nbsp;
+                <span>资金余额: </span><span className="currency">{this.state.cur_balance}</span><span>BTC&nbsp;</span>
                 <span>保证金率: </span><span className="risk-rate">{this.state.risk_rate}%</span>
             </div>
         );
@@ -47,8 +51,8 @@ var Order = React.createClass({
         });
         var priceClass = classNames({
             'price': true,
-            'gain': this.props.order.is_long == (this.props.cur_price > this.props.order.avg_fill_price),
-            'loss': this.props.order.is_long != (this.props.cur_price > this.props.order.avg_fill_price),
+            'gain': this.props.order.is_long == (this.props.cur_price[this.props.secid] > this.props.order.avg_fill_price),
+            'loss': this.props.order.is_long != (this.props.cur_price[this.props.secid] > this.props.order.avg_fill_price),
         });
         var stopClass = classNames({
             'price':  true,
