@@ -48,7 +48,7 @@ def main():
 @require_login
 def opened_orders():
     orders = sorted(g.account.opened_orders(), key=attrgetter('strategy_code'))
-    orders = [dict(secid=o.instrument.secid, sys_id=o.sys_id, order_time=o.order_time.strftime('%m-%d %H:%M:%S'), avg_fill_price=round(o.avg_fill_price, 2), volume=o.opened_volume, stoploss=round(o.stoploss, 2), is_long=o.is_long, scode=o.strategy_code, status=o.status) for o in orders]
+    orders = [dict(secid=o.instrument.secid, secname=o.instrument.name, sys_id=o.sys_id, order_time=o.order_time.strftime('%m-%d %H:%M:%S'), avg_fill_price=round(o.avg_fill_price, 2), volume=o.opened_volume, stoploss=round(o.stoploss, 2), is_long=o.is_long, scode=o.strategy_code, status=o.status) for o in orders]
     return json.dumps(orders)
 
 @app.route('/api/current-status/')

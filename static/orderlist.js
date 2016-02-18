@@ -51,8 +51,8 @@ var Order = React.createClass({
         });
         var priceClass = classNames({
             'price': true,
-            'gain': this.props.order.is_long == (this.props.cur_price[this.props.secid] > this.props.order.avg_fill_price),
-            'loss': this.props.order.is_long != (this.props.cur_price[this.props.secid] > this.props.order.avg_fill_price),
+            'gain': this.props.order.is_long == (this.props.cur_price > this.props.order.avg_fill_price),
+            'loss': this.props.order.is_long != (this.props.cur_price > this.props.order.avg_fill_price),
         });
         var stopClass = classNames({
             'price':  true,
@@ -63,6 +63,7 @@ var Order = React.createClass({
             <tr className={orderClass}>
                 <td className="order_time">{this.props.order.order_time}</td>
                 <td className="order_id">{this.props.order.sys_id}</td>
+                <td className="secid">{this.props.order.secname}</td>
                 <td className={priceClass}>{this.props.order.avg_fill_price}</td>
                 <td className="volume">{this.props.order.volume}</td>
                 <td className={stopClass}>{this.props.order.stoploss}</td>
@@ -101,7 +102,7 @@ var OrderList = React.createClass({
         var cur_price = this.props.cur_price;
         var orderNodes = this.state.orders.map(function(order) {
                 return (
-                    <Order key={order.sys_id} order={order} cur_price={cur_price}></Order>
+                    <Order key={order.sys_id} order={order} cur_price={cur_price[order.secid]}></Order>
                 );
             });
         return (
@@ -110,6 +111,7 @@ var OrderList = React.createClass({
                 <tr>
                     <th>下单时间</th>
                     <th>订单号</th>
+                    <th>合约</th>
                     <th>均价</th>
                     <th>数量</th>
                     <th>止损价</th>

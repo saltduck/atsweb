@@ -19168,8 +19168,8 @@ var Order = React.createClass({
         });
         var priceClass = classNames({
             'price': true,
-            'gain': this.props.order.is_long == this.props.cur_price[this.props.secid] > this.props.order.avg_fill_price,
-            'loss': this.props.order.is_long != this.props.cur_price[this.props.secid] > this.props.order.avg_fill_price
+            'gain': this.props.order.is_long == this.props.cur_price > this.props.order.avg_fill_price,
+            'loss': this.props.order.is_long != this.props.cur_price > this.props.order.avg_fill_price
         });
         var stopClass = classNames({
             'price': true,
@@ -19188,6 +19188,11 @@ var Order = React.createClass({
                 'td',
                 { className: 'order_id' },
                 this.props.order.sys_id
+            ),
+            React.createElement(
+                'td',
+                { className: 'secid' },
+                this.props.order.secname
             ),
             React.createElement(
                 'td',
@@ -19247,7 +19252,7 @@ var OrderList = React.createClass({
     render: function () {
         var cur_price = this.props.cur_price;
         var orderNodes = this.state.orders.map(function (order) {
-            return React.createElement(Order, { key: order.sys_id, order: order, cur_price: cur_price });
+            return React.createElement(Order, { key: order.sys_id, order: order, cur_price: cur_price[order.secid] });
         });
         return React.createElement(
             'table',
@@ -19267,6 +19272,11 @@ var OrderList = React.createClass({
                         'th',
                         null,
                         '订单号'
+                    ),
+                    React.createElement(
+                        'th',
+                        null,
+                        '合约'
                     ),
                     React.createElement(
                         'th',
