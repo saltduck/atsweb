@@ -66,6 +66,7 @@ var Order = React.createClass({
                 <td className="secid">{this.props.order.secname}</td>
                 <td className={priceClass}>{this.props.order.avg_fill_price}</td>
                 <td className="volume">{this.props.order.volume}</td>
+                <td className={priceClass}>{Math.round(this.props.order.volume * (1/this.props.order.avg_fill_price - 1/this.props.cur_price) * 1000000)/10000}</td>
                 <td className={stopClass}>{this.props.order.stoploss}</td>
                 <td className="scode">{this.props.order.scode}</td>
                 <td className="status">{this.props.order.status}</td>
@@ -114,6 +115,7 @@ var OrderList = React.createClass({
                     <th>合约</th>
                     <th>均价</th>
                     <th>数量</th>
+                    <th>盈亏</th>
                     <th>止损价</th>
                     <th>策略</th>
                     <th>状态</th>

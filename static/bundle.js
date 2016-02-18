@@ -19206,6 +19206,11 @@ var Order = React.createClass({
             ),
             React.createElement(
                 'td',
+                { className: priceClass },
+                Math.round(this.props.order.volume * (1 / this.props.order.avg_fill_price - 1 / this.props.cur_price) * 1000000) / 10000
+            ),
+            React.createElement(
+                'td',
                 { className: stopClass },
                 this.props.order.stoploss
             ),
@@ -19287,6 +19292,11 @@ var OrderList = React.createClass({
                         'th',
                         null,
                         '数量'
+                    ),
+                    React.createElement(
+                        'th',
+                        null,
+                        '盈亏'
                     ),
                     React.createElement(
                         'th',
