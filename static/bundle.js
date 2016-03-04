@@ -19254,6 +19254,10 @@ var OrderList = React.createClass({
         setInterval(this.loadData, this.props.pollInterval);
     },
 
+    componentDidUpdate: function (prevProps, prevState) {
+        sum_float_profit();
+    },
+
     render: function () {
         var volumes = { 'btc_usd_tw': { true: 0, false: 0 }, 'btc_usd_qt': { true: 0, false: 0 } };
         var cur_price = this.props.cur_price;
@@ -19292,6 +19296,12 @@ var OrderList = React.createClass({
                     -volumes['btc_usd_qt'][false]
                 ),
                 ' 张'
+            ),
+            React.createElement(
+                'p',
+                null,
+                '总浮盈：',
+                React.createElement('span', { id: 'total' })
             ),
             React.createElement(
                 'table',

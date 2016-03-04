@@ -1,5 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
 <div id="content"></div>
+<script>
+function sum_float_profit() {
+    var total = 0.0;
+    $('tbody').find('td').each(function(i) {
+        if (i % 9 == 5) {
+            total += parseFloat($(this).text());
+        }
+    });
+    $('#total').html(total);
+}
+</script>
 <script src="/static/bundle.js"></script>
 {% endblock %}
